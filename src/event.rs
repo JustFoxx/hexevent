@@ -1,27 +1,33 @@
-pub struct EventKey<T,V> {
-    pub invoker: Box<dyn Fn(&Vec<V>) -> T>,
+/// Event file
+/// I - return type of the invoker
+/// V - type of the events
+/// Please know that this applies to everything in this file
+
+
+pub struct EventKey<I,V> {
+    pub invoker: Box<dyn Fn(&Vec<V>) -> I>,
     registry: Vec<V>,
 }
 
-pub trait Event<T, V> {
+pub trait Event<I, V> {
     fn on_event(&mut self, callback: V);
-    fn new(invoker: Box<dyn Fn(&Vec<V>) -> T>) -> Self;
-    fn invoker(&self) -> T;
+    fn new(invoker: Box<dyn Fn(&Vec<V>) -> I>) -> Self;
+    fn invoker(&self) -> I;
 }
 
-impl<T,V> Event<T, V> for EventKey<T,V> {
+impl<I,V> Event<I, V> for EventKey<I,V> {
     fn on_event(&mut self, callback: V) {
         self.registry.push(callback);
     }
 
-    fn new(invoker: Box<dyn Fn(&Vec<V>) -> T>) -> Self {
+    fn new(invoker: Box<dyn Fn(&Vec<V>) -> I>) -> Self {
         EventKey {
             invoker,
             registry: Vec::new(),
         }
     }
 
-    fn invoker(&self) -> T {
+    fn invoker(&self) -> I {
         (self.invoker)(&self.registry)
     }
 }

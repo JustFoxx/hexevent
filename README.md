@@ -1,2 +1,3 @@
 # hexevent
-Callback event library
+Simple callback based event system.
+## Usage
