@@ -6,7 +6,8 @@ exclude = [
     ".idea/**/*",
     ".*/**/*",
 ]
-license_file = "LICENSE"
+license-file = "LICENSE"
+license = "LGPL-3.0"
 readme = "README.md"
 repository = "https://github.com/JustFoxx/hexevent"
 description = "Simple callback event system for Rust"
