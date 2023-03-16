@@ -3,7 +3,6 @@ name = "hexevent"
 version = "0.1.0"
 edition = "2021"
 exclude = [
-    ".idea/**/*",
     ".*/**/*",
 ]
 license-file = "LICENSE"
