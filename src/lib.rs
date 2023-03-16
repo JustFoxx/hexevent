@@ -12,16 +12,14 @@ mod tests {
     fn invoker<'a>(entries: &'a [&'a dyn Fn(i32)]) -> impl Fn(i32) -> i32 + 'a {
         move |y|test(1,y,entries)
     }
+    fn func(x: i32) {
+        println!("{}", x);
+    }
     #[test]
     fn it_works() {
         let mut event_test = EventKey::new(invoker);
-        let test: &dyn Fn(i32) = &|x| {
-            println!("Hello {}", x);
-        };
-        event_test.on_event(test);
-        event_test.on_event(test);
-        event_test.on_event(test);
+        event_test.on_event(&func);
         let result = event_test.invoke()(10);
-        assert_eq!(result, 270);
+        assert_eq!(result, 30);
     }
 }
