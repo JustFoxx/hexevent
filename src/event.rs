@@ -1,33 +1,32 @@
 /// Event file
-/// I - return type of the invoker
-/// V - type of the events
+/// I - invoker type
+/// R - additional return type
+/// C - Callback arguments
 /// Please know that this applies to everything in this file
 
-
-pub struct EventKey<I,V> {
-    pub invoker: Box<dyn Fn(&Vec<V>) -> I>,
-    registry: Vec<V>,
+pub struct EventKey<I, C> {
+    invoker: I,
+    callbacks: Vec<C>
 }
 
-pub trait Event<I, V> {
-    fn on_event(&mut self, callback: V);
-    fn new(invoker: Box<dyn Fn(&Vec<V>) -> I>) -> Self;
-    fn invoker(&self) -> I;
-}
-
-impl<I,V> Event<I, V> for EventKey<I,V> {
-    fn on_event(&mut self, callback: V) {
-        self.registry.push(callback);
-    }
-
-    fn new(invoker: Box<dyn Fn(&Vec<V>) -> I>) -> Self {
+impl<I, C> EventKey<I, C> {
+    pub fn new(invoker: I) -> EventKey<I, C> {
         EventKey {
             invoker,
-            registry: Vec::new(),
+            callbacks: Vec::new(),
         }
     }
 
-    fn invoker(&self) -> I {
-        (self.invoker)(&self.registry)
+    pub fn on_event(&mut self, callback: C) {
+        self.callbacks.push(callback);
+    }
+
+    pub fn invoke<'a, R>(&'a self) -> R
+        where
+            I: Fn(&'a [C]) -> R + 'a,
+            R: 'a,
+            C: 'a,
+    {
+        (self.invoker)(&self.callbacks)
     }
 }

@@ -3,29 +3,26 @@ mod event;
 #[cfg(test)]
 mod tests {
     use crate::event::*;
+    fn test<>(mut x: i32,y: i32, entries: &[&dyn Fn(i32)]) -> i32 {
+        for entry in entries {
+            x *= 3;
+            (entry)(x * y);
+        }
+        x * y
+    }
+    fn invoker<'a>(entries: &'a [&'a dyn Fn(i32)]) -> impl Fn(i32) -> i32 + 'a {
+        move |y|test(1,y,entries)
+    }
     #[test]
     fn it_works() {
-        fn invoker(entries: &Vec<&dyn Fn(i32)>) -> impl Fn(i32) -> i32 {
-            let mut x = 1;
-            for entry in entries {
-                x *= 3;
-                (entry)(x);
-            };
-            move |y| {
-                x * y
-            }
-        }
-
-        let mut event_test = EventKey::new(Box::new(
-                invoker,
-        ));
-        let test = &|x: i32| {
+        let mut event_test = EventKey::new(invoker);
+        let test: &dyn Fn(i32) = &|x| {
             println!("Hello {}", x);
         };
         event_test.on_event(test);
         event_test.on_event(test);
         event_test.on_event(test);
-        let result = event_test.invoker()(2);
-        assert_eq!(result, 54);
+        let result = event_test.invoke()(10);
+        assert_eq!(result, 270);
     }
 }
