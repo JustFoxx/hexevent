@@ -3,7 +3,7 @@
 /// R - additional return type
 /// C - Callback arguments
 /// Please know that this applies to everything in this file
-mod event {
+pub mod event {
     pub struct EventKey<I, C> {
         invoker: I,
         callbacks: Vec<C>
