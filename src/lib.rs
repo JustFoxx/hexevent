@@ -1,8 +1,7 @@
 mod event;
-
 #[cfg(test)]
 mod tests {
-    use crate::event::*;
+    use crate::events::*;
     fn test<>(mut x: i32,y: i32, entries: &[&dyn Fn(i32)]) -> i32 {
         for entry in entries {
             x *= 3;
